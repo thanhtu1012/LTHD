@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/users.entity';
 import { AdminModule } from './admin/admin.module';
 import { PaymentModule } from './payment/payment.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), // Đọc .env toàn cục
     TypeOrmModule.forRoot({
       type: 'mssql', // Kết nối tới MSSQL
       host: 'localhost',
