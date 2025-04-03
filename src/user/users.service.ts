@@ -42,6 +42,7 @@ export class UsersService {
     const newUser = this.usersRepository.create({
       ...user,
       password: hashedPassword,
+      role: user.role || 'user', //Mặc định là user
     });
 
     // Lưu vào cơ sở dữ liệu
