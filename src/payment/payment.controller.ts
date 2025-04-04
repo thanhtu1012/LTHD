@@ -42,14 +42,17 @@ export class PaymentController {
   @Get()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SetMetadata('role', 'user')
+
+  
   createPayment(@Req() req: Request, @Res() res: Response) {
     const orderId = Date.now().toString();
-    const amount = 100000; // Số tiền cố định
+    const amount = 100000; 
     const ipAddr = req.ip || req.connection.remoteAddress || '127.0.0.1';
-
+  
     const paymentUrl = this.paymentService.createPaymentUrl(orderId, amount, ipAddr);
-    console.log('Redirecting to VNPAY URL:', paymentUrl);
-    return res.redirect(paymentUrl);
+    console.log('Generated VNPAY URL:', paymentUrl);
+  
+    return res.json({ redirectUrl: paymentUrl }); // Trả về JSON thay vì redirect
   }
 
   @Get('return')
@@ -61,15 +64,15 @@ export class PaymentController {
       // Kiểm tra và thông báo kết quả
       if (responseCode === '00') {
         return res.redirect(
-          'http://127.0.0.1:5500/payment.html?status=success&txn=' + query.vnp_TransactionNo,
+          'http://localhost:8080/payment.html?status=success&txn=' + query.vnp_TransactionNo,
         );
       } else {
         return res.redirect(
-          'http://127.0.0.1:5500/payment.html?status=fail&code=' + responseCode,
+          'http://localhost:8080/payment.html?status=fail&code=' + responseCode,
         );
       }
     } else {
-      return res.redirect('http://127.0.0.1:5500/payment.html?status=fail&code=97');
+      return res.redirect('http://localhost:8080/payment.html?status=fail&code=97');
     }
   }
 }
